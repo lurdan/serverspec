@@ -1,0 +1,5 @@
+ruby-serverspec (0.6.28-1) UNRELEASED; urgency=low
+
+  * Initial release (Closes: #nnnn)
+
+ -- KURASHIKI Satoru <lurdan@gmail.com>  Fri, 05 Jul 2013 13:00:26 +0900
