@@ -17,4 +17,10 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-net-s
 Recommends: bundler (>= 1.3~), rake
 # guard-rspec (>= 0, development), growl (>= 0, development)
 Description: RSpec tests for your servers configured by Puppet, Chef or anything else
- RSpec tests for your servers configured by Puppet, Chef or anything else
+ With serverspec, you can write RSpec tests for checking your servers
+ are configured correctly.
+ .
+ Serverspec tests your servers' actual state through SSH access, so
+ you don't need to install any agent software on your servers and
+ can use any configuration management tools, Puppet, Chef, CFEngine
+ and so on.
