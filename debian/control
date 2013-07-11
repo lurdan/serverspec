@@ -13,8 +13,8 @@ XS-Ruby-Versions: all
 Package: ruby-serverspec
 Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-net-ssh, ruby-rspec (~> 2.13.0), ruby-highline
-Recommends: bundler (~> 1.3), rake
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-net-ssh, ruby-rspec (>= 2.13.0~), ruby-highline
+Recommends: bundler (>= 1.3~), rake
 # guard-rspec (>= 0, development), growl (>= 0, development)
 Description: RSpec tests for your servers configured by Puppet, Chef or anything else
  RSpec tests for your servers configured by Puppet, Chef or anything else
