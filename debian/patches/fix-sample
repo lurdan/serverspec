@@ -45,7 +45,7 @@ Last-Update: <YYYY-MM-DD>
  end
  
 -describe file('/etc/httpd/conf/httpd.conf') do
-+describe file('/etc/apache2/sites-enabled/default.conf') do
++describe file('/etc/apache2/sites-enabled/000-default') do
    it { should be_file }
    it { should contain "ServerName #{@hostname}" }
  end
