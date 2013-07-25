@@ -14,5 +14,5 @@ end
 
 describe selinux do
   it { should be_disabled }
-  its(:command) { should eq "getenforce | grep -i -- disabled && grep -i -- ^SELINUX=disabled$ /etc/selinux/config" }
+  its(:command) { should eq "test ! -f /etc/selinux/config || (getenforce | grep -i -- disabled && grep -i -- ^SELINUX=disabled$ /etc/selinux/config)" }
 end
