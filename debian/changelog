@@ -1,5 +1,5 @@
-ruby-serverspec (0.6.28-1) unstable; urgency=low
+ruby-serverspec (0.7.1-1) unstable; urgency=low
 
   * Initial release (Closes: #716662)
 
- -- KURASHIKI Satoru <lurdan@gmail.com>  Fri, 05 Jul 2013 13:00:26 +0900
+ -- KURASHIKI Satoru <lurdan@gmail.com>  Thu, 25 Jul 2013 11:07:26 +0900
