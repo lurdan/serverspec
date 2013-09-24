@@ -31,7 +31,12 @@ end
 
 describe file('/etc/ssh/sshd_config') do
   it { should contain 'This is the sshd server system-wide configuration file' }
-  its(:command) { should eq "grep -q -- This\\ is\\ the\\ sshd\\ server\\ system-wide\\ configuration\\ file /etc/ssh/sshd_config" }
+  its(:command) { should eq "grep -q -- This\\ is\\ the\\ sshd\\ server\\ system-wide\\ configuration\\ file /etc/ssh/sshd_config || grep -qF -- This\\ is\\ the\\ sshd\\ server\\ system-wide\\ configuration\\ file /etc/ssh/sshd_config" }
+end
+
+describe file('/etc/ssh/sshd_config') do
+  it { should contain /^This is the sshd server system-wide configuration file/ }
+  its(:command) { should eq "grep -q -- \\^This\\ is\\ the\\ sshd\\ server\\ system-wide\\ configuration\\ file /etc/ssh/sshd_config || grep -qF -- \\^This\\ is\\ the\\ sshd\\ server\\ system-wide\\ configuration\\ file /etc/ssh/sshd_config"}
 end
 
 describe file('/etc/ssh/sshd_config') do
@@ -40,7 +45,7 @@ end
 
 describe file('Gemfile') do
   it { should contain('rspec').from(/^group :test do/).to(/^end/) }
-  its(:command) { should eq "sed -n /\\^group\\ :test\\ do/,/\\^end/p Gemfile | grep -q -- rspec -" }
+  its(:command) { should eq "sed -n /\\^group\\ :test\\ do/,/\\^end/p Gemfile | grep -q -- rspec - || sed -n /\\^group\\ :test\\ do/,/\\^end/p Gemfile | grep -qF -- rspec -" }
 end
 
 describe file('/etc/ssh/sshd_config') do
@@ -49,7 +54,7 @@ end
 
 describe file('Gemfile') do
   it { should contain('rspec').after(/^group :test do/) }
-  its(:command) { should eq "sed -n /\\^group\\ :test\\ do/,\\$p Gemfile | grep -q -- rspec -" }
+  its(:command) { should eq "sed -n /\\^group\\ :test\\ do/,\\$p Gemfile | grep -q -- rspec - || sed -n /\\^group\\ :test\\ do/,\\$p Gemfile | grep -qF -- rspec -" }
 end
 
 describe file('/etc/ssh/sshd_config') do
@@ -58,7 +63,7 @@ end
 
 describe file('Gemfile') do
   it { should contain('rspec').before(/^end/) }
-  its(:command) { should eq "sed -n 1,/\\^end/p Gemfile | grep -q -- rspec -" }
+  its(:command) { should eq "sed -n 1,/\\^end/p Gemfile | grep -q -- rspec - || sed -n 1,/\\^end/p Gemfile | grep -qF -- rspec -" }
 end
 
 describe file('/etc/ssh/sshd_config') do
@@ -94,7 +99,7 @@ end
 
 describe file('/etc/pam.d/system-auth') do
   it { should be_linked_to '/etc/pam.d/system-auth-ac' }
-  its(:command) { should eq "stat -c %N /etc/pam.d/system-auth | grep -- /etc/pam.d/system-auth-ac" }
+  its(:command) { should eq "stat -f %Y /etc/pam.d/system-auth | grep -- /etc/pam.d/system-auth-ac" }
 end
 
 describe file('dummy-link') do
@@ -378,4 +383,13 @@ end
 
 describe file('invalid-file') do
   it { should_not match_md5checksum 'INVALIDMD5CHECKSUM' }
+end
+
+describe file('/etc/services') do
+  it { should match_sha256checksum '0c3feee1353a8459f8c7d84885e6bc602ef853751ffdbce3e3b6dfa1d345fc7a' }
+  its(:command) { should eq "openssl sha256 /etc/services | cut -d'=' -f2 | cut -c 2- | grep -E ^0c3feee1353a8459f8c7d84885e6bc602ef853751ffdbce3e3b6dfa1d345fc7a$" }
+end
+
+describe file('invalid-file') do
+  it { should_not match_sha256checksum 'INVALIDSHA256CHECKSUM' }
 end

@@ -4,7 +4,7 @@ module Serverspec
   module Commands
     class Linux < Base
       def check_access_by_user(file, user, access)
-        "su -c \"test -#{access} #{file}\" #{user}"
+        "su -s /bin/sh -c \"test -#{access} #{file}\" #{user}"
       end
 
       def check_iptables_rule(rule, table=nil, chain=nil)
@@ -31,6 +31,30 @@ module Serverspec
 
       def get_interface_speed_of(name)
         "ethtool #{name} | grep Speed | gawk '{print gensub(/Speed: ([0-9]+)Mb\\\/s/,\"\\\\1\",\"\")}'"
+      end
+
+      def check_ipv4_address(interface, ip_address)
+        ip_address = ip_address.dup
+        if ip_address =~ /\/\d+$/
+          ip_address << " "
+        else
+          ip_address << "/"
+        end
+        ip_address.gsub!(".", "\\.")
+        "ip addr show #{interface} | grep 'inet #{ip_address}'"
+      end
+      
+      def check_zfs(zfs, property=nil)
+        if property.nil?
+          "zfs list -H #{escape(zfs)}"
+        else
+          commands = []
+          property.sort.each do |key, value|
+            regexp = "^#{value}$"
+            commands << "zfs list -H -o #{escape(key)} #{escape(zfs)} | grep -- #{escape(regexp)}"
+          end
+          commands.join(' && ')
+        end
       end
     end
   end

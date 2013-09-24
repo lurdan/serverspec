@@ -6,7 +6,14 @@ module Serverspec
       class NotImplementedError < Exception; end
 
       def escape(target)
-        Shellwords.shellescape(target.to_s())
+        str = case target
+              when Regexp
+                target.source
+              else
+                target.to_s
+              end
+
+        Shellwords.shellescape(str)
       end
 
       def check_enabled(service, level=3)
@@ -107,18 +114,34 @@ module Serverspec
       end
 
       def check_file_contain(file, expected_pattern)
+        "#{check_file_contain_with_regexp(file, expected_pattern)} || #{check_file_contain_with_fixed_strings(file, expected_pattern)}"
+      end
+
+      def check_file_contain_with_regexp(file, expected_pattern)
         "grep -q -- #{escape(expected_pattern)} #{escape(file)}"
       end
 
+      def check_file_contain_with_fixed_strings(file, expected_pattern)
+        "grep -qF -- #{escape(expected_pattern)} #{escape(file)}"
+      end
+
       def check_file_md5checksum(file, expected)
-        "md5sum #{escape(file)} | grep -iw -- ^#{escape(expected)}"
+        regexp = "^#{expected}"
+        "md5sum #{escape(file)} | grep -iw -- #{escape(regexp)}"
+      end
+
+      def check_file_sha256checksum(file, expected)
+        regexp = "^#{expected}"
+        "sha256sum #{escape(file)} | grep -iw -- #{escape(regexp)}"
       end
 
       def check_file_contain_within(file, expected_pattern, from=nil, to=nil)
         from ||= '1'
         to ||= '$'
-        checker = check_file_contain("-", expected_pattern)
-        "sed -n #{escape(from)},#{escape(to)}p #{escape(file)} | #{checker}"
+        sed = "sed -n #{escape(from)},#{escape(to)}p #{escape(file)}"
+        checker_with_regexp = check_file_contain_with_regexp("-", expected_pattern)
+        checker_with_fixed  = check_file_contain_with_fixed_strings("-", expected_pattern)
+        "#{sed} | #{checker_with_regexp} || #{sed} | #{checker_with_fixed}"
       end
 
       def check_mode(file, mode)
@@ -150,24 +173,29 @@ module Serverspec
       end
 
       def check_installed_by_gem(name, version=nil)
-        cmd = "gem list --local | grep -w -- ^#{escape(name)}"
-        if ! version.nil?
-          cmd = "#{cmd} | grep -w -- #{escape(version)}"
-        end
+        regexp = "^#{name}"
+        cmd = "gem list --local | grep -w -- #{escape(regexp)}"
+        cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
         cmd
       end
 
       def check_installed_by_npm(name, version=nil)
         cmd = "npm ls #{escape(name)} -g"
-        cmd = "#{cmd} | grep -w -- #{escape(version)}" unless version.nil?
+        cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
         cmd
       end
 
       def check_installed_by_pecl(name, version=nil)
-        cmd = "pecl list | grep -w -- ^#{escape(name)}"
-        if ! version.nil?
-          cmd = "#{cmd} | grep -w -- #{escape(version)}"
-        end
+        regexp = "^#{name}"
+        cmd = "pecl list | grep -w -- #{escape(regexp)}"
+        cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
+        cmd
+      end
+
+      def check_installed_by_pip(name, version=nil)
+        regexp = "^#{name}"
+        cmd = "pip list | grep -w -- #{escape(regexp)}"
+        cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
         cmd
       end
 
@@ -236,6 +264,15 @@ module Serverspec
 
       def check_kernel_module_loaded(name)
         raise NotImplementedError.new
+      end
+
+      def check_ipv4_address(interface, ip_address)
+        raise NotImplementedError.new
+      end
+
+      def check_mail_alias(recipient, target)
+        target = "[[:space:]]#{target}"
+        "getent aliases #{escape(recipient)} | grep -- #{escape(target)}$"
       end
     end
   end
