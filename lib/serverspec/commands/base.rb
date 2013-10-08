@@ -192,9 +192,23 @@ module Serverspec
         cmd
       end
 
+      def check_installed_by_pear(name, version=nil)
+        regexp = "^#{name}"
+        cmd = "pear list | grep -w -- #{escape(regexp)}"
+        cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
+        cmd
+      end
+
       def check_installed_by_pip(name, version=nil)
         regexp = "^#{name}"
         cmd = "pip list | grep -w -- #{escape(regexp)}"
+        cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
+        cmd
+      end
+
+      def check_installed_by_cpan(name, version=nil)
+        regexp = "^#{name}"
+        cmd = "cpan -l | grep -w -- #{escape(regexp)}"
         cmd = "#{cmd} | grep -w -- #{escape(version)}" if version
         cmd
       end
