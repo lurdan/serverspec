@@ -3,7 +3,6 @@ require 'pathname'
 require 'rspec/mocks/standalone'
 
 include Serverspec::Helper::Exec
-include Serverspec::Helper::DetectOS
 
 PROJECT_ROOT = (Pathname.new(File.dirname(__FILE__)) + '..').expand_path
 
@@ -35,21 +34,11 @@ module Serverspec
         end
       end
     end
-    [Exec, Ssh].each do |clz|
+    [Exec, Ssh, Cmd, WinRM].each do |clz|
       clz.class_eval do
         include TestCommandRunner
         def run_command(cmd)
-          cmd = build_command(cmd)
-          cmd = add_pre_command(cmd)
-          do_run cmd
-        end
-      end
-    end
-    [Cmd, WinRM].each do |clz|
-      clz.class_eval do
-        include TestCommandRunner
-        def run_command(cmd)
-          cmd = build_command(cmd.script)
+          cmd = build_command(cmd.to_s)
           cmd = add_pre_command(cmd)
           do_run cmd
         end

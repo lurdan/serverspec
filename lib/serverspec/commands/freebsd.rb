@@ -6,12 +6,17 @@ module Serverspec
       end
 
       def check_installed(package, version=nil)
-        "pkg_version -X -s #{escape(package)}"
+        "pkg_info -Ix #{escape(package)}"
       end
 
       def check_listening(port)
         regexp = ":#{port} "
         "sockstat -46l -p #{port} | grep -- #{escape(regexp)}"
+      end
+
+      def check_mode(file, mode)
+        regexp = "^#{mode}$"
+        "stat -f%Lp #{escape(file)} | grep -- #{escape(regexp)}"
       end
     end
   end

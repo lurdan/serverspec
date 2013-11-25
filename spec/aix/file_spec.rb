@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-RSpec.configure do |c|
-  c.os = 'AIX'
-end
+include Serverspec::Helper::AIX
 
 describe file('/etc/ssh/sshd_config') do
   it { should be_file }
@@ -70,10 +68,6 @@ end
 
 describe file('/etc/ssh/sshd_config') do
   it { should_not contain('This is invalid text!!').before(/^end/) }
-end
-
-describe file('/etc/passwd') do
-  it { should be_mode 644 }
 end
 
 describe file('/etc/passwd') do
@@ -389,4 +383,22 @@ end
 
 describe file('invalid-file') do
   it { should_not match_sha256checksum 'INVALIDSHA256CHECKSUM' }
+end
+
+describe file('/etc/passwd') do
+  let(:stdout) {<<EOF
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+EOF
+  }
+
+  its(:content) { should match /root:x:0:0/ }
 end
