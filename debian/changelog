@@ -1,3 +1,11 @@
+ruby-serverspec (0.14.2-1) unstable; urgency=low
+
+  * New upstream release.
+  * fix FTBFS by changing test config. (Closes: #730924)
+  * Now depends on ruby-specinfra.
+
+ -- KURASHIKI Satoru <lurdan@gmail.com>  Sat, 28 Dec 2013 11:31:34 +0900
+
 ruby-serverspec (0.9.8-1) unstable; urgency=low
 
   * New upstream release.
