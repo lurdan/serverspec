@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-include Serverspec::Helper::FreeBSD
+include SpecInfra::Helper::FreeBSD
 
 describe file('/etc/ssh/sshd_config') do
   it { should be_file }
@@ -109,7 +109,7 @@ end
 describe file('/dev') do
   let(:stdout) { "755\r\n" }
   it { should be_readable }
-  its(:command) { should eq "stat -c %a /dev" }
+  its(:command) { should eq "stat -f%Lp /dev" }
 end
 
 describe file('/dev') do
@@ -150,7 +150,7 @@ end
 describe file('/dev') do
   let(:stdout) { "755\r\n" }
   it { should be_writable }
-  its(:command) { should eq "stat -c %a /dev" }
+  its(:command) { should eq "stat -f%Lp /dev" }
 end
 
 describe file('/dev') do

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-include Serverspec::Helper::Debian
+include SpecInfra::Helper::Debian
 
 describe service('sshd') do
   it { should be_enabled }
-  its(:command) { should eq "ls /etc/rc3.d/ | grep -- sshd || grep 'start on' /etc/init/sshd.conf" }
+  its(:command) { should eq "ls /etc/rc3.d/ | grep -- '^S..sshd' || grep 'start on' /etc/init/sshd.conf" }
 end
 
 describe service('invalid-service') do
@@ -13,7 +13,7 @@ end
 
 describe service('sshd') do
   it { should be_enabled.with_level(4) }
-  its(:command) { should eq "ls /etc/rc4.d/ | grep -- sshd || grep 'start on' /etc/init/sshd.conf" }
+  its(:command) { should eq "ls /etc/rc4.d/ | grep -- '^S..sshd' || grep 'start on' /etc/init/sshd.conf" }
 end
 
 describe service('invalid-service') do
@@ -22,7 +22,7 @@ end
 
 describe service('sshd') do
   it { should be_running }
-  its(:command) { should eq "service sshd status | grep 'running'" }
+  its(:command) { should eq "service sshd status" }
 end
 
 describe service('invalid-daemon') do

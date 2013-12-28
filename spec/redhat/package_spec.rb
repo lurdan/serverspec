@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-include Serverspec::Helper::RedHat
+include SpecInfra::Helper::RedHat
 
 describe package('httpd') do
   it { should be_installed }
@@ -106,4 +106,13 @@ end
 describe package('App::Ack') do
   it { should be_installed.by('cpan').with_version('2.04') }
   its(:command) { should eq "cpan -l | grep -w -- \\^App::Ack | grep -w -- 2.04" }
+end
+
+describe package('httpd') do
+  let(:stdout) { "2.2.15\n" }
+  its(:version) { should eq '2.2.15' }
+  its(:version) { should > '2.2.14' }
+  its(:version) { should < '2.2.16' }
+  its(:version) { should > '2.2.9' }
+  its(:command) { should eq "rpm -qi httpd | grep Version | awk '{print $3}'" }
 end

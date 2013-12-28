@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-include Serverspec::Helper::Debian
+include SpecInfra::Helper::Debian
 
 describe package('apache2') do
   it { should be_installed }
-  its(:command) { should eq "dpkg -s apache2 && ! dpkg -s apache2 | grep -E '^Status: .+ not-installed$'" }
+  its(:command) { should eq "dpkg-query -f '${Status}' -W apache2 | grep '^install ok installed$'" }
 end
 
 describe package('invalid-package') do
@@ -13,7 +13,7 @@ end
 
 describe package('apache2') do
   it { should be_installed.with_version('1.1.1') }
-  its(:command) { should eq "dpkg -s apache2 && ! dpkg -s apache2 | grep -E '^Status: .+ not-installed$' && dpkg -s apache2 | grep -E '^Version: 1.1.1$'" }
+  its(:command) { should eq "dpkg-query -f '${Status} ${Version}' -W apache2 | grep -E '^install ok installed 1.1.1$'" }
 end
 
 describe package('invalid-package') do
@@ -97,4 +97,34 @@ end
 describe package('App::Ack') do
   it { should be_installed.by('cpan').with_version('2.04') }
   its(:command) { should eq "cpan -l | grep -w -- \\^App::Ack | grep -w -- 2.04" }
+end
+
+describe package('httpd') do
+  let(:stdout) { "2.2.15\n" }
+  its(:version) { should eq '2.2.15' }
+  its(:version) { should > '2.2.14' }
+  its(:version) { should < '2.2.16' }
+  its(:command) { should eq "dpkg-query -f '${Status} ${Version}' -W httpd | sed -n 's/^install ok installed //p'" }
+end
+
+# Debian-style versions
+describe package('httpd') do
+  let(:stdout) { "2.2.15-3\n" }
+  its(:version) { should eq '2.2.15-3' }
+  its(:version) { should > '2.2.15' }
+  its(:version) { should < '2.2.16' }
+  its(:version) { should < '2.2.15-4' }
+  its(:version) { should > '2.2.15-3~bpo70+1' }
+end
+
+# With some epoch
+describe package('httpd') do
+  let(:stdout) { "3:2.2.15-3~git20120918+ae4569bc\n" }
+  its(:version) { should eq '3:2.2.15-3~git20120918+ae4569bc' }
+  its(:version) { should > '3:2.2.15-3~git20120912+ae4569bc' }
+  its(:version) { should < '3:2.2.15-3' }
+  its(:version) { should < '3:2.2.15-3+feature1' }
+  its(:version) { should < '4:1.2.15' }
+  its(:version) { should > '2:4.2.15' }
+  its(:version) { should > '14.2.15' }
 end

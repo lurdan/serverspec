@@ -1,8 +1,7 @@
 require 'spec_helper'
 
-require 'serverspec/helper/base'
-include Serverspec::Helper::RedHat
-include Serverspec::Helper::Exec
+include SpecInfra::Helper::RedHat
+include SpecInfra::Helper::Exec
 
 describe 'configurations are not set' do
   context file('/etc/passwd') do
@@ -16,6 +15,13 @@ describe 'path is set' do
   context file('/etc/passwd') do
     it { should be_file }
     its(:command) { should eq 'env PATH=/sbin:/usr/sbin:$PATH test -f /etc/passwd' }
+  end
+end
+
+describe 'path is reset to nil' do
+  context file('/etc/passwd') do
+    it { should be_file }
+    its(:command) { should eq 'test -f /etc/passwd' }
   end
 end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-include Serverspec::Helper::Cmd
-include Serverspec::Helper::Windows
+include SpecInfra::Helper::Cmd
+include SpecInfra::Helper::Windows
 
 describe group('test.group') do
   it { should exist }
@@ -22,8 +22,7 @@ describe group('test.group') do
     {
       :have_gid => [nil],
     }.each do |method, args|
-      expect { should self.send(method, *args) }.to raise_error Serverspec::Commands::Windows::NotSupportedError
+      expect { should self.send(method, *args) }.to raise_error SpecInfra::Command::Windows::NotSupportedError
     end
   end
 end
-
