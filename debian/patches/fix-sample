@@ -3,9 +3,11 @@ Author: KURASHIKI Satoru <lurdan@gmail.com>
 Bug-Debian: http://bugs.debian.org/716662
 Origin: vendor
 
---- ruby-serverspec-0.6.28.orig/lib/serverspec/setup.rb
-+++ ruby-serverspec-0.6.28/lib/serverspec/setup.rb
-@@ -48,11 +48,11 @@ EOF
+Index: serverspec/lib/serverspec/setup.rb
+===================================================================
+--- serverspec.orig/lib/serverspec/setup.rb	2014-03-26 22:00:46.000000000 +0900
++++ serverspec/lib/serverspec/setup.rb	2014-03-26 22:00:46.000000000 +0900
+@@ -94,11 +94,11 @@
        content = <<-EOF
  require 'spec_helper'
  
@@ -19,12 +21,12 @@ Origin: vendor
    it { should be_enabled   }
    it { should be_running   }
  end
-@@ -61,7 +61,7 @@ describe port(80) do
+@@ -107,7 +107,7 @@
    it { should be_listening }
  end
  
 -describe file('/etc/httpd/conf/httpd.conf') do
 +describe file('/etc/apache2/sites-enabled/000-default') do
    it { should be_file }
-   it { should contain "ServerName #{@hostname}" }
+   its(:content) { should match /ServerName #{@hostname}/ }
  end
