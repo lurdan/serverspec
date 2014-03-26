@@ -109,7 +109,7 @@ end
 
 describe file('/etc/httpd/conf/httpd.conf') do
   it { should be_file }
-  it { should contain "ServerName #{@hostname}" }
+  its(:content) { should match /ServerName #{@hostname}/ }
 end
 EOF
 
@@ -161,7 +161,9 @@ require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = 'spec/*/*_spec.rb'
 end
-EOF
+
+task :default => :spec
+      EOF
       if File.exists? 'Rakefile'
         old_content = File.read('Rakefile')
         if old_content != content
@@ -189,7 +191,7 @@ EOF
         list_of_vms = []
         if vagrant_list != ''
           vagrant_list.each_line do |line|
-            if match = /([a-z_-]+[\s]+)(created|not created|poweroff|running|saved)[\s](\(virtualbox\)|\(vmware\))/.match(line)
+            if match = /([\w-]+[\s]+)(created|not created|poweroff|running|saved)[\s](\(virtualbox\)|\(vmware\))/.match(line)
               list_of_vms << match[1].strip!
             end
           end

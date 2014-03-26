@@ -5,7 +5,15 @@ module Serverspec
         backend.check_enabled(@name, level)
       end
 
-      def running?(under=nil)
+      def installed?(name, version)
+        backend.check_service_installed(@name)
+      end
+
+      def has_start_mode?(mode)
+        backend.check_service_start_mode(@name, mode)
+      end
+
+      def running?(under)
         if under
           check_method = "check_running_under_#{under}".to_sym
 

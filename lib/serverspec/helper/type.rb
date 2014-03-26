@@ -2,10 +2,10 @@ module Serverspec
   module Helper
     module Type
       types = %w(
-        base cgroup command cron default_gateway file group host interface
+        base cgroup command cron default_gateway file group host iis_website iis_app_pool interface
         ipfilter ipnat iptables kernel_module linux_kernel_parameter lxc mail_alias
         package php_config port process routing_table selinux service user yumrepo
-        windows_registry_key zfs
+        windows_feature windows_registry_key zfs
       )
 
       types.each {|type| require "serverspec/type/#{type}" }

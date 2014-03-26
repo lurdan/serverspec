@@ -54,8 +54,10 @@ describe package('Adobe AIR') do
 end
 
 describe service('DNS Client') do
+  it { should be_installed }
   it { should be_enabled }
   it { should be_running }
+  it { should have_start_mode("Manual") }
 end
 
 describe port(139) do
@@ -89,6 +91,26 @@ describe windows_registry_key('HKEY_USERS\S-1-5-21-1319311448-2088773778-3166178
   it { should have_property_value('qword value', :type_qword, 'adff32') }
   it { should have_property_value('binary value', :type_binary, 'dfa0f066') }
 end
+
+describe windows_feature('Minesweeper') do
+  it{ should be_installed }
+  it{ should be_installed.by("dism") }
+  it{ should be_installed.by("powershell") }
+end
+
+describe iis_website("Default Website") do
+  it { should exist }
+  it { should be_enabled }
+  it { should be_running }
+  it { should be_in_app_pool "DefaultAppPool" }
+  it { should have_physical_path "c:/inetpub/wwwroot" }
+end
+
+describe iis_app_pool("DefaultAppPool") do
+  it { should exist }
+  it { should have_dotnet_version "2.0" }
+end
+
 ```
 
 ###Notes:
