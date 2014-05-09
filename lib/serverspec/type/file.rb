@@ -16,10 +16,14 @@ module Serverspec
       end
 
       def contain(pattern, from, to)
-        if (from || to).nil?
-          backend.check_file_contain(@name, pattern)
+        if pattern.is_a?(Array)
+          backend.check_file_contain_lines(@name, pattern, from, to)
         else
-          backend.check_file_contain_within(@name, pattern, from, to)
+          if (from || to).nil?
+            backend.check_file_contain(@name, pattern)
+          else
+            backend.check_file_contain_within(@name, pattern, from, to)
+          end
         end
       end
 
@@ -70,7 +74,7 @@ module Serverspec
       def match_checksum(checksum)
         backend.check_file_checksum(@name, checksum)
       end
-      
+
       def match_md5checksum(md5sum)
         backend.check_file_md5checksum(@name, md5sum)
       end

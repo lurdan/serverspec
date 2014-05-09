@@ -1,4 +1,4 @@
-# Serverspec [![Gem Version](https://badge.fury.io/rb/serverspec.png)](http://badge.fury.io/rb/serverspec) [![BuildStatus](https://secure.travis-ci.org/serverspec/serverspec.png)](http://travis-ci.org/serverspec/serverspec) [![Code Climate](https://codeclimate.com/github/serverspec/serverspec.png)](https://codeclimate.com/github/serverspec/serverspec)
+# Serverspec [![Gem Version](https://badge.fury.io/rb/serverspec.png)](http://badge.fury.io/rb/serverspec) [![BuildStatus](https://secure.travis-ci.org/serverspec/serverspec.png)](http://travis-ci.org/serverspec/serverspec) [![Code Climate](https://codeclimate.com/github/serverspec/serverspec.png)](https://codeclimate.com/github/serverspec/serverspec) [![wercker status](https://app.wercker.com/status/526d1ff4df6eadaa793dca1affcaed35/s/ "wercker status")](https://app.wercker.com/project/bykey/526d1ff4df6eadaa793dca1affcaed35)
 
 RSpec tests for your servers configured by Puppet, Chef or anything else
 
@@ -97,7 +97,7 @@ Finished in 0.99715 seconds
 ----
 ## Multi OS support
 
-Serverspec supports Darwin based OS, Red Hat based OS, Debian based OS, Gentoo and Solaris.
+Serverspec supports Darwin based OS, Red Hat based OS, Debian based OS, Gentoo, Solaris and Arch.
 
 Serverspec can detect target host's OS automatically.
 
@@ -132,9 +132,11 @@ You can select from:
 
 * SpecInfra::Helper::RedHat
 * SpecInfra::Helper::Debian
+* SpecInfra::Helper::Fedora
 * SpecInfra::Helper::Gentoo
 * SpecInfra::Helper::Solaris
 * SpecInfra::Helper::Darwin
+* SpecInfra::Helper::Arch
 
 ## Vagrant support
 
