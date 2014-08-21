@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rspec'
+require 'rspec/its'
 require 'specinfra'
 require 'serverspec/version'
 require 'serverspec/matchers'
@@ -16,6 +17,7 @@ module RSpec
         def dump_failure_info(example)
           exception = example.execution_result[:exception]
           exception_class_name = exception_class_name_for(exception)
+          output.puts "#{long_padding}#{failure_color("On host `#{SpecInfra.configuration.host}`")}"
           output.puts "#{long_padding}#{failure_color("Failure/Error:")} #{failure_color(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{failure_color(exception_class_name)}: #{failure_color(exception.message)}" unless exception_class_name =~ /RSpec/
           output.puts "#{long_padding}  #{failure_color(example.metadata[:command])}" if example.metadata[:command]
@@ -31,6 +33,7 @@ module RSpec
         def dump_failure_info(example)
           exception = example.execution_result[:exception]
           exception_class_name = exception_class_name_for(exception)
+          output.puts "#{long_padding}#{failure_color("On host `#{SpecInfra.configuration.host}`")}"
           output.puts "#{long_padding}#{failure_color("Failure/Error:")} #{failure_color(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{failure_color(exception_class_name)}: #{failure_color(exception.message)}" unless exception_class_name =~ /RSpec/
           output.puts "#{long_padding}  #{failure_color(example.metadata[:command])}" if example.metadata[:command]

@@ -1,23 +1,32 @@
 require 'spec_helper'
 
-include SpecInfra::Helper::Arch
+include SpecInfra::Helper::NixOS
 
-describe package('curl') do
+describe package('apache-httpd') do
   it { should be_installed }
-  its(:command) { should eq "pacman -Q | grep curl" }
+  its(:command) { should eq "nix-store -q --references /var/run/current-system/sw | grep apache-httpd" }
 end
 
 describe package('invalid-package') do
   it { should_not be_installed }
 end
 
-describe package('curl') do
-  it { should be_installed.with_version('7.37.0-1') }
-  its(:command) { should eq "pacman -Q | grep curl 7.37.0-1" }
+package('invalid-package') do
+  it { should_not be_installed.by('nix') }
 end
 
-package('invalid-package') do
-  it { should_not be_installed.by('pacman') }
+describe package('apache-httpd') do
+  it { should be_installed.with_version('2.4.9') }
+  its(:command) { should eq "nix-store -q --references /var/run/current-system/sw | grep apache-httpd-2.4.9" }
+end
+
+describe package('httpd') do
+  it { should be_installed.by('nix').with_version('2.4.9') }
+  its(:command) { should eq "nix-store -q --references /var/run/current-system/sw | grep httpd-2.4.9" }
+end
+
+describe package('httpd') do
+  it { should_not be_installed.with_version('invalid-version') }
 end
 
 describe package('jekyll') do

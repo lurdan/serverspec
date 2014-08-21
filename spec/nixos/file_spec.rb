@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-include SpecInfra::Helper::RedHat
+include SpecInfra::Helper::NixOS
 
 describe file('/etc/ssh/sshd_config') do
   it { should be_file }
@@ -149,7 +149,7 @@ end
 
 describe file('/tmp') do
   it { should be_readable.by_user('mail') }
-  its(:command) { should eq "runuser -s /bin/sh -c \"test -r /tmp\" mail" }
+  its(:command) { should eq "su -s /bin/sh -c \"test -r /tmp\" mail" }
 end
 
 describe file('/tmp') do
@@ -199,7 +199,7 @@ end
 
 describe file('/tmp') do
   it { should be_writable.by_user('mail') }
-  its(:command) { should eq "runuser -s /bin/sh -c \"test -w /tmp\" mail" }
+  its(:command) { should eq "su -s /bin/sh -c \"test -w /tmp\" mail" }
 end
 
 describe file('/tmp') do
@@ -249,7 +249,7 @@ end
 
 describe file('/tmp') do
   it { should be_executable.by_user('mail') }
-  its(:command) { should eq "runuser -s /bin/sh -c \"test -x /tmp\" mail" }
+  its(:command) { should eq "su -s /bin/sh -c \"test -x /tmp\" mail" }
 end
 
 describe file('/tmp') do
@@ -263,11 +263,6 @@ end
 
 describe file('/etc/invalid-mount') do
   it { should_not be_mounted }
-end
-
-describe file('/etc/immutable-file') do
-  it { should be_immutable }
-  its(:command) { should eq "lsattr -d /etc/immutable-file 2>&1 | awk '$1~/^-*i-*$/ {exit 0} {exit 1}'" }
 end
 
 describe file('/') do
@@ -382,8 +377,8 @@ describe file('/etc/invalid-mount') do
 end
 
 describe file('/etc/services') do
-  it { should match_md5checksum '35435ea447c19f0ea5ef971837ab9ced' }
-  its(:command) { should eq "md5sum /etc/services | grep -iw -- \\^35435ea447c19f0ea5ef971837ab9ced" }
+  it { should match_md5checksum '9d39e51e6bd5a30168c26c57b66d2e37' }
+  its(:command) { should eq "md5sum /etc/services | grep -iw -- \\^9d39e51e6bd5a30168c26c57b66d2e37" }
 end
 
 describe file('invalid-file') do
@@ -391,8 +386,8 @@ describe file('invalid-file') do
 end
 
 describe file('/etc/services') do
-  it { should match_sha256checksum '0c3feee1353a8459f8c7d84885e6bc602ef853751ffdbce3e3b6dfa1d345fc7a' }
-  its(:command) { should eq "sha256sum /etc/services | grep -iw -- \\^0c3feee1353a8459f8c7d84885e6bc602ef853751ffdbce3e3b6dfa1d345fc7a" }
+  it { should match_sha256checksum 'b4d36eb75767bebb41c5fa7a35599952e1883b3d3f6332496e1561eeb4067018' }
+  its(:command) { should eq "sha256sum /etc/services | grep -iw -- \\^b4d36eb75767bebb41c5fa7a35599952e1883b3d3f6332496e1561eeb4067018" }
 end
 
 describe file('invalid-file') do
@@ -401,16 +396,24 @@ end
 
 describe file('/etc/passwd') do
   let(:stdout) {<<EOF
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-sync:x:5:0:sync:/sbin:/bin/sync
-shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-halt:x:7:0:halt:/sbin:/sbin/halt
-mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
-operator:x:11:0:operator:/root:/sbin/nologin
-nobody:x:99:99:Nobody:/:/sbin/nologin
-dbus:x:81:81:System message bus:/:/sbin/nologin
+root:x:0:0:System administrator:/root:/run/current-system/sw/bin/bash
+nscd:x:1:65534:Name service cache daemon user:/var/empty:/run/current-system/sw/sbin/nologin
+sshd:x:2:65534:SSH privilege separation user:/var/empty:/run/current-system/sw/sbin/nologin
+ntp:x:3:65534:NTP daemon user:/var/lib/ntp:/run/current-system/sw/sbin/nologin
+messagebus:x:4:4:D-Bus system message bus daemon user:/var/run/dbus:/run/current-system/sw/sbin/nologin
+polkituser:x:28:65534:PolKit daemon:/var/empty:/run/current-system/sw/sbin/nologin
+systemd-journal-gateway:x:110:65534::/var/empty:/run/current-system/sw/sbin/nologin
+nixbld1:x:30001:30000:Nix build user 1:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld2:x:30002:30000:Nix build user 2:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld3:x:30003:30000:Nix build user 3:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld4:x:30004:30000:Nix build user 4:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld5:x:30005:30000:Nix build user 5:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld6:x:30006:30000:Nix build user 6:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld7:x:30007:30000:Nix build user 7:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld8:x:30008:30000:Nix build user 8:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld9:x:30009:30000:Nix build user 9:/var/empty:/run/current-system/sw/sbin/nologin
+nixbld10:x:30010:30000:Nix build user 10:/var/empty:/run/current-system/sw/sbin/nologin
+nobody:x:65534:65534:Unprivileged account (don't use!):/var/empty:/run/current-system/sw/sbin/nologin
 EOF
   }
 

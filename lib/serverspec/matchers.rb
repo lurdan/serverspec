@@ -23,6 +23,7 @@ require 'serverspec/matchers/be_running'
 
 # user
 require 'serverspec/matchers/belong_to_group'
+require 'serverspec/matchers/belong_to_primary_group'
 
 require 'serverspec/matchers/return_exit_status'
 require 'serverspec/matchers/return_stdout'
@@ -33,3 +34,8 @@ require 'serverspec/matchers/have_rule'
 
 # cron, routing_table
 require 'serverspec/matchers/have_entry'
+
+# iis_website
+require 'serverspec/matchers/have_site_application'
+require 'serverspec/matchers/have_site_bindings'
+require 'serverspec/matchers/have_virtual_dir'

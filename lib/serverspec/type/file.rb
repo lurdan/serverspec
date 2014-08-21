@@ -1,3 +1,5 @@
+require 'date'
+
 module Serverspec
   module Type
     class File < Base
@@ -71,6 +73,10 @@ module Serverspec
         backend.check_mounted(@name, attr, only_with)
       end
 
+      def immutable?
+        backend.check_immutable(@name)
+      end
+
       def match_checksum(checksum)
         backend.check_file_checksum(@name, checksum)
       end
@@ -92,6 +98,15 @@ module Serverspec
 
       def version?(version)
         backend.check_file_version(@name, version)
+      end
+
+      def mtime
+        d = backend.get_file_mtime(@name).stdout.strip
+        DateTime.strptime(d, '%s').new_offset(DateTime.now.offset)
+      end
+
+      def size
+        backend.get_file_size(@name).stdout.strip.to_i
       end
     end
   end
