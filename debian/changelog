@@ -1,3 +1,9 @@
+ruby-serverspec (1.14.0-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- KURASHIKI Satoru <lurdan@gmail.com>  Fri, 22 Aug 2014 00:04:56 +0900
+
 ruby-serverspec (1.6.0-1) unstable; urgency=medium
 
   * New upstream release.
