@@ -1,3 +1,10 @@
+ruby-serverspec (1.14.0-2) unstable; urgency=medium
+
+  * New Standard-Version: 3.9.5
+  * patch to use old rspec (< 3) (Closes: #761729)
+
+ -- KURASHIKI Satoru <lurdan@gmail.com>  Wed, 08 Oct 2014 09:04:59 +0900
+
 ruby-serverspec (1.14.0-1) unstable; urgency=medium
 
   * New upstream release.

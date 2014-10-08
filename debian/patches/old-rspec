@@ -1,0 +1,12 @@
+Index: serverspec/lib/serverspec.rb
+===================================================================
+--- serverspec.orig/lib/serverspec.rb
++++ serverspec/lib/serverspec.rb
+@@ -1,6 +1,6 @@
+ require 'rubygems'
+ require 'rspec'
+-require 'rspec/its'
++#require 'rspec/its'
+ require 'specinfra'
+ require 'serverspec/version'
+ require 'serverspec/matchers'
